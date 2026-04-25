@@ -1,0 +1,66 @@
+.hero {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(44px, 7vw, 88px) 16px clamp(28px, 5vw, 56px);
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(124, 156, 255, 0.16), transparent 42%),
+    radial-gradient(circle at 35% 55%, rgba(78, 161, 255, 0.08), transparent 34%),
+    radial-gradient(circle at 65% 55%, rgba(255, 77, 109, 0.07), transparent 36%);
+  pointer-events: none;
+}
+
+.hero__inner {
+  width: min(920px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+
+.hero__eyebrow {
+  margin: 0;
+  color: var(--ship-2);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.hero__title {
+  margin: 0;
+  max-width: 860px;
+  color: var(--text);
+  font-size: clamp(2.45rem, 6vw, 5rem);
+  line-height: 0.9;
+  letter-spacing: -0.075em;
+}
+
+.hero__copy {
+  margin: 0;
+  max-width: 680px;
+  color: var(--text-soft);
+  font-size: clamp(0.98rem, 1.4vw, 1.12rem);
+  line-height: 1.65;
+}
+
+.hero--battle {
+  padding-top: clamp(46px, 7vw, 82px);
+  padding-bottom: clamp(30px, 4vw, 46px);
+}
+
+.hero--align-left {
+  text-align: left;
+}
+
+.hero--align-left .hero__inner {
+  justify-items: start;
+}

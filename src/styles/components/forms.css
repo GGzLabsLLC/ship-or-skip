@@ -1,0 +1,292 @@
+.form-error {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  background: rgba(127, 29, 29, 0.25);
+  color: #fecaca;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.form-success {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(52, 211, 153, 0.26);
+  background: rgba(6, 78, 59, 0.22);
+  color: rgba(167, 243, 208, 0.98);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-field + .form-field {
+  margin-top: 18px;
+}
+
+.form-field > span {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  min-height: 56px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 16px;
+  padding: 0 16px;
+  background: rgba(10, 14, 24, 0.72);
+  color: #f8fafc;
+  font-size: 0.98rem;
+  outline: none;
+  color-scheme: dark;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.form-field select option,
+.form-field select optgroup {
+  background: #0d1320;
+  color: #f3f7ff;
+}
+
+.form-field select optgroup {
+  color: #9dadc7;
+}
+
+.form-field select {
+  position: relative;
+  z-index: 2;
+}
+
+.select-pop {
+  width: 100%;
+}
+
+.select-pop__trigger {
+  list-style: none;
+
+  width: 100%;
+  min-height: 56px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 16px;
+  padding: 0 16px;
+  background: rgba(10, 14, 24, 0.72);
+  color: #f8fafc;
+  font-size: 0.98rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  cursor: pointer;
+  user-select: none;
+  color-scheme: dark;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.select-pop__trigger::-webkit-details-marker {
+  display: none;
+}
+
+.select-pop[open] .select-pop__trigger {
+  border-color: rgba(129, 140, 248, 0.7);
+  box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.12);
+  background: rgba(10, 14, 24, 0.82);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.select-pop__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.select-pop__chevron {
+  flex-shrink: 0;
+  color: rgba(226, 232, 240, 0.7);
+  font-size: 0.86rem;
+}
+
+.select-pop__menu {
+  margin-top: -1px;
+  padding: 6px;
+  border-radius: 0 0 16px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 0;
+  background:
+    radial-gradient(circle at top, rgba(78, 161, 255, 0.08), transparent 55%),
+    linear-gradient(180deg, rgba(18, 24, 38, 0.96), rgba(10, 14, 24, 0.98));
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+
+  max-height: min(280px, 45vh);
+  overflow-y: auto;
+}
+
+.select-pop__option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  font-weight: 650;
+  font-size: 0.93rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.select-pop__option:hover {
+  background: rgba(124, 156, 255, 0.1);
+  border-color: rgba(124, 156, 255, 0.18);
+}
+
+.select-pop__option.is-selected {
+  background: rgba(167, 139, 250, 0.12);
+  border-color: rgba(167, 139, 250, 0.22);
+}
+
+.select-pop__option:focus-visible {
+  outline: none;
+  background: rgba(124, 156, 255, 0.12);
+  border-color: rgba(124, 156, 255, 0.28);
+}
+
+.form-field input::placeholder {
+  color: rgba(148, 163, 184, 0.7);
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: rgba(129, 140, 248, 0.7);
+  box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.upload-shell {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+
+.upload-shell__input {
+  display: none;
+}
+
+.upload-shell__content {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 14px;
+  row-gap: 8px;
+  min-height: 74px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px dashed rgba(129, 140, 248, 0.45);
+  background:
+    linear-gradient(180deg, rgba(99, 102, 241, 0.08), rgba(255, 255, 255, 0.03));
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.upload-shell:hover .upload-shell__content {
+  border-color: rgba(167, 139, 250, 0.65);
+  background:
+    linear-gradient(180deg, rgba(129, 140, 248, 0.12), rgba(255, 255, 255, 0.04));
+  transform: translateY(-1px);
+}
+
+.upload-shell__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--ship), var(--skip));
+  box-shadow:
+    0 10px 24px rgba(78, 161, 255, 0.18),
+    0 10px 24px rgba(255, 77, 109, 0.14);
+  flex-shrink: 0;
+}
+
+.upload-shell__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.upload-shell__text strong {
+  color: #f8fafc;
+  font-size: 0.96rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.upload-shell__text span {
+  margin-top: 3px;
+  color: rgba(226, 232, 240, 0.68);
+  font-size: 0.87rem;
+}
+
+.upload-shell__button {
+  justify-self: end;
+  flex-shrink: 0;
+}
+
+.form-preview {
+  margin-top: 14px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.form-preview__image {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+}
+
+@media (max-width: 720px) {
+  .upload-shell__content {
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .upload-shell__button {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    width: 100%;
+  }
+}

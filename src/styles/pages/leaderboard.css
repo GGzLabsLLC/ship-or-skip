@@ -1,0 +1,137 @@
+.leaderboard-table-wrap {
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.leaderboard-row {
+  transition: background 0.18s ease;
+}
+
+.leaderboard-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.leaderboard-row--top {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(78, 161, 255, 0.08),
+      rgba(255, 77, 109, 0.04) 55%,
+      transparent
+    );
+}
+
+.leaderboard-table th {
+  color: var(--text-soft);
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.leaderboard-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(135deg, rgba(78, 161, 255, 0.14), rgba(255, 77, 109, 0.08));
+  color: var(--text);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.leaderboard-project {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.leaderboard-project__image {
+  width: 58px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.leaderboard-project__content {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.leaderboard-project__name {
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.leaderboard-project__url {
+  min-width: 0;
+  color: #c8d6ff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-project__action {
+  width: fit-content;
+  min-width: 88px;
+}
+
+.leaderboard-shiprate {
+  --shiprate: 0;
+
+  display: grid;
+  gap: 6px;
+  min-width: 140px;
+}
+
+.leaderboard-shiprate__label {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.leaderboard-shiprate__bar {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 77, 109, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.leaderboard-shiprate__fill {
+  display: block;
+  height: 100%;
+  width: calc(var(--shiprate) * 1%);
+  background: linear-gradient(90deg, rgba(78, 161, 255, 0.95), rgba(124, 156, 255, 0.95));
+}
+
+@media (max-width: 720px) {
+  .leaderboard-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

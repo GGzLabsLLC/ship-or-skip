@@ -1,0 +1,11 @@
+.empty-state {
+  padding: 48px 20px;
+  color: var(--text-soft);
+}
+
+.empty-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}

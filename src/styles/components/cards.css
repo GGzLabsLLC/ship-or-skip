@@ -1,0 +1,227 @@
+.battle-card {
+  position: relative;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent 55%),
+    linear-gradient(180deg, rgba(18, 24, 38, 0.96), rgba(23, 31, 49, 0.98));
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.battle-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--ship-2), var(--skip), transparent);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.battle-card::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  pointer-events: none;
+  border-radius: 23px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.battle-card--ship {
+  border-color: rgba(78, 161, 255, 0.18);
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px rgba(78, 161, 255, 0.1) inset,
+    0 28px 80px rgba(78, 161, 255, 0.08);
+}
+
+.battle-card--skip {
+  border-color: rgba(255, 77, 109, 0.16);
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px rgba(255, 77, 109, 0.08) inset,
+    0 28px 80px rgba(255, 77, 109, 0.06);
+}
+
+.battle-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
+}
+
+.battle-card--ship:hover {
+  border-color: rgba(78, 161, 255, 0.28);
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(78, 161, 255, 0.14) inset,
+    0 30px 90px rgba(78, 161, 255, 0.12);
+}
+
+.battle-card--skip:hover {
+  border-color: rgba(255, 77, 109, 0.26);
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(255, 77, 109, 0.12) inset,
+    0 30px 90px rgba(255, 77, 109, 0.1);
+}
+
+.battle-card__image-wrap {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
+    #0d1320;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.battle-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.battle-card__rank-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(8, 12, 20, 0.58);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  box-shadow:
+    0 12px 34px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.battle-card__rank-badge.is-top-3 {
+  border-color: rgba(124, 156, 255, 0.26);
+  box-shadow:
+    0 12px 34px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(124, 156, 255, 0.1) inset,
+    0 14px 40px rgba(124, 156, 255, 0.12);
+}
+
+.battle-card__rank-badge.is-top-1 {
+  border-color: rgba(124, 156, 255, 0.38);
+  box-shadow:
+    0 12px 34px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(124, 156, 255, 0.16) inset,
+    0 18px 54px rgba(124, 156, 255, 0.22),
+    0 18px 54px rgba(255, 77, 109, 0.12);
+}
+
+.battle-card__body {
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  padding: 18px;
+}
+
+.battle-card__meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.battle-card__rating {
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.battle-card__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.battle-card__title {
+  margin: 0 0 6px;
+  font-size: clamp(1.6rem, 2.2vw, 2.05rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.battle-card__tagline {
+  margin: 0 0 12px;
+  color: var(--text-soft);
+  line-height: 1.55;
+  font-size: 0.96rem;
+  min-height: 44px;
+}
+
+.battle-card__url-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-height: 20px;
+  margin: 0 0 14px;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.battle-card__url-label {
+  flex-shrink: 0;
+  color: var(--text-soft);
+  opacity: 0.78;
+}
+
+.battle-card__url {
+  min-width: 0;
+  color: #c8d6ff;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.battle-card__url--muted {
+  color: var(--text-soft);
+  opacity: 0.72;
+}
+
+.battle-card__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: auto;
+  margin-bottom: 16px;
+  color: var(--text-soft);
+  font-size: 0.84rem;
+}
+
+.battle-card__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: auto;
+}
+
+@media (max-width: 720px) {
+  .battle-card__body {
+    min-height: auto;
+  }
+
+  .battle-card__tagline {
+    min-height: auto;
+  }
+
+  .battle-card__actions {
+    grid-template-columns: 1fr;
+  }
+}

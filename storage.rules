@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    match /project-screenshots/{fileName} {
+      // Screenshots are intended to be publicly viewable in battle cards.
+      allow read: if true;
+
+      // Soft-launch: unauthenticated create-only uploads with size/type constraints.
+      // Next hardening step: require request.auth != null (anonymous auth) + App Check.
+      allow create: if request.resource != null
+        && request.resource.size < 3 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+
+      // No public overwrites/deletes.
+      allow update, delete: if isAdmin();
+    }
+  }
+}
+

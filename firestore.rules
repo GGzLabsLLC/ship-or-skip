@@ -1,0 +1,132 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    function isNonEmptyString(value, maxLen) {
+      return value is string && value.size() > 0 && value.size() <= maxLen;
+    }
+
+    function isHttpUrl(value) {
+      return value is string
+        && value.size() <= 2048
+        && value.matches('^https?://.+');
+    }
+
+    function isProjectCategory(value) {
+      // Stored as a human label (e.g. "AI", "Dev Tools"). Keep validation permissive but bounded.
+      return isNonEmptyString(value, 40);
+    }
+
+    function isValidNewProject() {
+      return request.resource.data.keys().hasOnly([
+          'name',
+          'tagline',
+          'link',
+          'imageUrl',
+          'screenshotUrl',
+          'category',
+          'rating',
+          'wins',
+          'losses',
+          'votes',
+          'status',
+          'submittedAt',
+          'statusUpdatedAt'
+        ])
+        && isNonEmptyString(request.resource.data.name, 80)
+        && isNonEmptyString(request.resource.data.tagline, 160)
+        && isHttpUrl(request.resource.data.link)
+        && isNonEmptyString(request.resource.data.imageUrl, 2048)
+        && isNonEmptyString(request.resource.data.screenshotUrl, 2048)
+        && request.resource.data.imageUrl == request.resource.data.screenshotUrl
+        && isProjectCategory(request.resource.data.category)
+        && request.resource.data.status == 'pending'
+        && request.resource.data.rating == 1200
+        && request.resource.data.wins == 0
+        && request.resource.data.losses == 0
+        && request.resource.data.votes == 0
+        // serverTimestamp() resolves to request.time in rules.
+        && request.resource.data.submittedAt == request.time
+        && request.resource.data.statusUpdatedAt == request.time;
+    }
+
+    function changedKeys() {
+      return request.resource.data.diff(resource.data).changedKeys();
+    }
+
+    function abs(value) {
+      return value < 0 ? -value : value;
+    }
+
+    function isApproved() {
+      return resource.data.status == 'approved';
+    }
+
+    function isValidVoteUpdate() {
+      // Soft-launch only: allows constrained vote mutations from clients.
+      // Replace with a callable Cloud Function + transaction before real public traffic.
+      return isApproved()
+        && request.resource.data.status == 'approved'
+        && request.resource.data.name == resource.data.name
+        && request.resource.data.tagline == resource.data.tagline
+        && request.resource.data.link == resource.data.link
+        && request.resource.data.imageUrl == resource.data.imageUrl
+        && request.resource.data.screenshotUrl == resource.data.screenshotUrl
+        && request.resource.data.category == resource.data.category
+        && request.resource.data.submittedAt == resource.data.submittedAt
+        && request.resource.data.statusUpdatedAt == resource.data.statusUpdatedAt
+        && request.resource.data.rating is int
+        && request.resource.data.wins is int
+        && request.resource.data.losses is int
+        && request.resource.data.votes is int
+        && request.resource.data.rating >= 0
+        && request.resource.data.rating <= 5000
+        && (
+          // Winner update: rating changes + wins/votes increment by 1
+          (
+            changedKeys().hasOnly(['rating', 'wins', 'votes'])
+            && request.resource.data.wins == resource.data.wins + 1
+            && request.resource.data.votes == resource.data.votes + 1
+            && request.resource.data.losses == resource.data.losses
+            && abs(request.resource.data.rating - resource.data.rating) <= 64
+          )
+          ||
+          // Loser update: rating changes + losses increment by 1
+          (
+            changedKeys().hasOnly(['rating', 'losses'])
+            && request.resource.data.losses == resource.data.losses + 1
+            && request.resource.data.wins == resource.data.wins
+            && request.resource.data.votes == resource.data.votes
+            && abs(request.resource.data.rating - resource.data.rating) <= 64
+          )
+        );
+    }
+
+    function isValidAdminModerationUpdate() {
+      return changedKeys().hasOnly(['status', 'statusUpdatedAt'])
+        && request.resource.data.status in ['pending', 'approved', 'rejected']
+        && request.resource.data.statusUpdatedAt == request.time;
+    }
+
+    match /projects/{projectId} {
+      // Public reads are approved-only. Clients MUST query with status == "approved".
+      allow get, list: if isAdmin() || isApproved();
+
+      // Public submissions: create-only, validated, forced pending + initial counters.
+      allow create: if isValidNewProject();
+
+      // Voting is temporarily allowed (constrained) to keep the app usable.
+      // Admin can moderate; public cannot edit/delete otherwise.
+      allow update: if (isAdmin() && isValidAdminModerationUpdate()) || (!isAdmin() && isValidVoteUpdate());
+      allow delete: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,20 @@
+:root {
+  --bg: #0a0d14;
+  --panel: #121826;
+  --panel-2: #171f31;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #f3f7ff;
+  --text-soft: #9dadc7;
+  --ship: #4ea1ff;
+  --ship-2: #7c9cff;
+  --skip: #ff4d6d;
+  --skip-2: #ff7a59;
+
+  --accent: var(--ship-2);
+  --accent-2: #9d7cff;
+  --success: #7ef0b8;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+  --radius: 22px;
+  --radius-sm: 14px;
+  --site-width: 1200px;
+}

@@ -1,0 +1,20 @@
+@import "./tokens.css";
+@import "./base.css";
+@import "./layout.css";
+@import "./utilities.css";
+
+@import "./components/buttons.css";
+@import "./components/cards.css";
+@import "./components/forms.css";
+@import "./components/pills.css";
+@import "./components/category-selector.css";
+@import "./components/leaders-panel.css";
+@import "./components/hero.css";
+@import "./components/footer.css";
+@import "./components/header.css";
+
+@import "./pages/battle.css";
+@import "./pages/leaderboard.css";
+@import "./pages/moderation.css";
+@import "./pages/submit.css";
+@import "./pages/legal.css";
