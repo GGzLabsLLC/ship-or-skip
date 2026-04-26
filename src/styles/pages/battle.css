@@ -418,6 +418,10 @@
   margin: 0 auto;
 }
 
+#battle-categories {
+  scroll-margin-top: 96px;
+}
+
 .arena-body {
   margin-top: 18px;
   width: 100%;
@@ -820,10 +824,10 @@
 
 .arena-body {
   width: min(calc(100vw - 32px), 1600px);
-  margin: 28px auto 0;
+  margin: 18px auto 0;
   display: grid;
-  grid-template-columns: 340px minmax(0, 900px) 340px;
-  gap: 22px;
+  grid-template-columns: 280px minmax(0, 980px) 300px;
+  gap: 26px;
   align-items: start;
 }
 
@@ -837,16 +841,13 @@
 
 .arena-filter {
   grid-column: 1;
-  padding: 18px;
+  padding: 16px;
   border-radius: 24px;
-  border: 1px solid rgba(124, 156, 255, 0.28);
-  background:
-    radial-gradient(circle at top left, rgba(124, 156, 255, 0.12), transparent 36%),
-    radial-gradient(circle at bottom right, rgba(255, 77, 109, 0.1), transparent 40%),
-    rgba(10, 13, 24, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 13, 24, 0.56);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.035) inset,
-    0 22px 70px rgba(0, 0, 0, 0.38);
+    0 18px 52px rgba(0, 0, 0, 0.28);
   overflow: hidden;
 }
 
@@ -856,7 +857,7 @@
   inset: 0 0 auto;
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--ship-2), var(--skip), transparent);
-  opacity: 0.92;
+  opacity: 0.38;
   pointer-events: none;
 }
 
@@ -889,37 +890,61 @@
 .arena-rail .leaders-panel {
   width: 100%;
   min-width: 0;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 18px 52px rgba(0, 0, 0, 0.28);
+  background: rgba(10, 13, 24, 0.56);
+}
+
+.battle-page--arena .leaders-panel__kicker {
+  color: var(--text-soft);
+  opacity: 0.78;
+}
+
+.battle-page--arena .leaders-panel__subline {
+  color: var(--text-soft);
+  opacity: 0.78;
+}
+
+.battle-page--arena .leaders-panel__link {
+  opacity: 0.72;
+}
+
+.battle-page--arena .leaders-panel__link:hover {
+  opacity: 0.9;
 }
 
 /* Fix leaderboard column alignment inside the right rail */
-.leaders-cols,
-.leaders-item {
+.battle-page--arena .arena-rail .leaders-cols,
+.battle-page--arena .arena-rail .leaders-item {
   display: grid;
-  grid-template-columns: 38px minmax(92px, 1fr) 48px 54px 40px;
+  grid-template-columns: 38px minmax(0, 1fr) 48px 58px;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  box-sizing: border-box;
 }
 
-.leaders-cols {
+.battle-page--arena .arena-rail .leaders-cols {
   font-size: 0.62rem;
 }
 
-.leaders-cols span,
-.leaders-item > * {
+.battle-page--arena .arena-rail .leaders-cols span,
+.battle-page--arena .arena-rail .leaders-item > * {
   min-width: 0;
 }
 
-.leaders-cols__elo,
-.leaders-cols__ship,
-.leaders-cols__votes,
-.leaders-item__elo,
-.leaders-item__shiprate,
-.leaders-item__votes {
+.battle-page--arena .arena-rail .leaders-cols__elo,
+.battle-page--arena .arena-rail .leaders-cols__ship,
+.battle-page--arena .arena-rail .leaders-cols__votes,
+.battle-page--arena .arena-rail .leaders-item__elo,
+.battle-page--arena .arena-rail .leaders-item__shiprate,
+.battle-page--arena .arena-rail .leaders-item__votes {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-.leaders-item__name {
+.battle-page--arena .arena-rail .leaders-item__name {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -933,7 +958,8 @@
 
 @media (max-width: 1400px) {
   .arena-body {
-    grid-template-columns: 300px minmax(0, 860px) 320px;
+    grid-template-columns: 260px minmax(0, 920px) 280px;
+    gap: 22px;
   }
 }
 
@@ -950,11 +976,11 @@
     position: static;
   }
 
-  .arena-filter {
+  .arena-duel {
     order: 1;
   }
 
-  .arena-duel {
+  .arena-filter {
     order: 2;
   }
 
@@ -968,9 +994,7 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  /* Matches the typical height of your populated leaderboard. 
-     Tweak this exact pixel value by 5-10px if your leaderboard changes! */
-  min-height: 428px; 
+  min-height: auto;
 }
 /* --- 1. Center Content Fix (Take 2) --- */
 .battle-page--arena {
@@ -997,41 +1021,35 @@
     align-items: center !important;
     width: 100% !important;
     max-width: 100% !important;
-    margin: 16px auto 0 !important;
-    gap: 24px !important;
+    margin: 12px auto 0 !important;
+    gap: 16px !important;
   }
 
-  /* 1. Leaderboard first (under hero) */
-  .arena-rail {
+  /* 1. Duel area first */
+  .arena-duel {
     order: 1 !important;
     width: 100% !important;
-    max-width: 540px; /* Keeps it from getting awkwardly wide on tablets */
   }
 
-  /* 2. Filter second */
+  /* 2. Filters below duel controls */
   .arena-filter {
     order: 2 !important;
     width: 100% !important;
     max-width: 540px;
-    min-height: auto !important; /* Remove the desktop height-match */
+    min-height: auto !important;
+    padding: 14px !important;
   }
 
-  /* 3. Battle Cards third */
-  .arena-duel {
+  /* 3. Standings after filters */
+  .arena-rail {
     order: 3 !important;
     width: 100% !important;
+    max-width: 540px;
   }
 
   /* Fix Leaderboard padding/bleeding on tiny screens */
   .leaders-panel {
     padding: 14px !important;
-  }
-
-  .leaders-cols, 
-  .leaders-item {
-    /* Tighten the grid for mobile phones */
-    grid-template-columns: 28px minmax(0, 1fr) 40px 44px !important;
-    gap: 6px !important;
   }
 
   /* Ensure the headline and intro text don't hug the edges */
@@ -1042,6 +1060,36 @@
 
 /* Specific fix for the duel cards on mobile to ensure they don't overflow */
 @media (max-width: 720px) {
+  .battle-page--arena .arena-rail .leaders-cols,
+  .battle-page--arena .arena-rail .leaders-item {
+    grid-template-columns: 38px minmax(0, 1fr) 44px 48px !important;
+    gap: 8px !important;
+  }
+
+  .battle-page--arena .arena-rail .leaders-item {
+    padding-inline: 12px;
+  }
+
+  .battle-page--arena .arena-rail .leaders-cols__ship,
+  .battle-page--arena .arena-rail .leaders-item__shiprate {
+    padding-right: 4px;
+    white-space: nowrap;
+  }
+
+  .arena-rail {
+    display: block !important;
+    order: 3 !important;
+    width: 100% !important;
+    max-width: 540px !important;
+  }
+  
+  /* Mobile: keep leaderboard but limit noise */
+@media (max-width: 420px) {
+  .arena-rail .leaders-item:nth-child(n + 4) {
+    display: none;
+  }
+}
+
   .battle-grid {
     grid-template-columns: 1fr !important;
     gap: 12px !important;
@@ -1052,4 +1100,396 @@
     transform: none !important; /* Remove the tilt on mobile for better tap targets */
     box-shadow: 0 10px 30px rgba(0,0,0,0.25) !important;
   }
+}
+/* ==============================
+   RED vs BLUE IDENTITY (TOP EDGE + SUBTLE GLOW)
+   ============================== */
+
+.battle-card--red {
+  border-color: rgba(255, 77, 109, 0.24);
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px rgba(255, 77, 109, 0.1) inset,
+    0 24px 70px rgba(255, 77, 109, 0.08);
+}
+
+.battle-card--blue {
+  border-color: rgba(78, 161, 255, 0.24);
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px rgba(78, 161, 255, 0.1) inset,
+    0 24px 70px rgba(78, 161, 255, 0.08);
+}
+
+/* 🔥 Top edge identity (your idea) */
+.battle-card--red::before {
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 77, 109, 0.95),
+    rgba(255, 138, 155, 0.7),
+    transparent
+  );
+  box-shadow: 0 4px 14px rgba(255, 77, 109, 0.25);
+}
+
+.battle-card--blue::before {
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(78, 161, 255, 0.95),
+    rgba(124, 156, 255, 0.7),
+    transparent
+  );
+  box-shadow: 0 4px 14px rgba(78, 161, 255, 0.25);
+}
+
+/* Hover amplification (subtle, not chaotic) */
+.battle-card--red:hover {
+  border-color: rgba(255, 77, 109, 0.34);
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(255, 77, 109, 0.14) inset,
+    0 30px 90px rgba(255, 77, 109, 0.12);
+}
+
+.battle-card--blue:hover {
+  border-color: rgba(78, 161, 255, 0.34);
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(78, 161, 255, 0.14) inset,
+    0 30px 90px rgba(78, 161, 255, 0.12);
+}
+
+/* Buttons inherit identity */
+.battle-card--red .btn--ship {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 77, 109, 0.95),
+    rgba(255, 105, 125, 0.9)
+  );
+  border-color: rgba(255, 138, 155, 0.4);
+}
+
+.battle-card--blue .btn--ship {
+  background: linear-gradient(
+    135deg,
+    rgba(78, 161, 255, 0.95),
+    rgba(124, 156, 255, 0.9)
+  );
+  border-color: rgba(124, 156, 255, 0.4);
+}
+/* ==============================
+   RED vs BLUE (TUNED +50% VISIBILITY)
+   ============================== */
+
+.battle-card--red {
+  border-color: rgba(255, 77, 109, 0.38); /* was ~0.24 */
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px rgba(255, 77, 109, 0.16) inset,
+    0 18px 50px rgba(255, 77, 109, 0.12);
+}
+
+.battle-card--blue {
+  border-color: rgba(78, 161, 255, 0.38);
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px rgba(78, 161, 255, 0.16) inset,
+    0 18px 50px rgba(78, 161, 255, 0.12);
+}
+.battle-card--red::before {
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 77, 109, 1),
+    rgba(255, 120, 140, 0.85),
+    transparent
+  );
+  box-shadow: 0 3px 10px rgba(255, 77, 109, 0.35);
+}
+
+.battle-card--blue::before {
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(78, 161, 255, 1),
+    rgba(140, 180, 255, 0.85),
+    transparent
+  );
+  box-shadow: 0 3px 10px rgba(78, 161, 255, 0.35);
+}
+.battle-card {
+  backdrop-filter: saturate(1.05);
+}
+/* ==============================
+   RED vs BLUE IMAGE PRESENCE
+   Keeps white screenshots from washing out team identity
+   ============================== */
+
+.battle-card__image-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  mix-blend-mode: screen;
+}
+
+.battle-card--red .battle-card__image-wrap::after {
+  background:
+    linear-gradient(135deg, rgba(255, 77, 109, 0.42), transparent 45%),
+    linear-gradient(180deg, rgba(255, 77, 109, 0.2), transparent 34%);
+}
+
+.battle-card--blue .battle-card__image-wrap::after {
+  background:
+    linear-gradient(135deg, rgba(78, 161, 255, 0.42), transparent 45%),
+    linear-gradient(180deg, rgba(78, 161, 255, 0.2), transparent 34%);
+}
+
+.battle-card--red .battle-card__image-wrap {
+  border-bottom-color: rgba(255, 77, 109, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(255, 77, 109, 0.12);
+}
+
+.battle-card--blue .battle-card__image-wrap {
+  border-bottom-color: rgba(78, 161, 255, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(78, 161, 255, 0.12);
+}
+/* ==============================
+   PERSISTENT DUEL GLOW (ALWAYS ON)
+   ============================== */
+
+.duel-card {
+  position: relative;
+  z-index: 1;
+}
+
+/* Base glow (always visible) */
+.duel-card::before {
+  content: "";
+  position: absolute;
+  inset: -12% -8% -14% -8%;
+  z-index: -1;
+  border-radius: 28px;
+  filter: blur(48px);
+  opacity: 0.22; /* 👈 always on */
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+/* 🔴 LEFT (red identity) */
+.duel-card--left::before {
+  background: radial-gradient(
+    circle at 38% 50%,
+    rgba(255, 77, 109, 0.55),
+    rgba(255, 77, 109, 0.22) 40%,
+    transparent 72%
+  );
+}
+
+/* 🔵 RIGHT (blue identity) */
+.duel-card--right::before {
+  background: radial-gradient(
+    circle at 62% 50%,
+    rgba(78, 161, 255, 0.55),
+    rgba(78, 161, 255, 0.22) 40%,
+    transparent 72%
+  );
+}
+.duel-card:hover::before {
+  opacity: 0.3;
+}
+/* ==============================
+   ARENA BACKDROP GLOW (SUBTLE)
+   ============================== */
+
+.battle-grid {
+  position: relative;
+}
+
+/* shared backdrop layer */
+.battle-grid::before {
+  content: "";
+  position: absolute;
+  inset: -80px -120px;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 25% 55%,
+      rgba(255, 77, 109, 0.22),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 75% 55%,
+      rgba(78, 161, 255, 0.22),
+      transparent 40%
+    );
+  filter: blur(60px);
+  opacity: 100.00;
+}
+
+/* keep cards above glow */
+.duel-card {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 720px) {
+  .battle-grid::before {
+    filter: blur(40px);
+    opacity: 0.35;
+  }
+}
+/* ==============================
+   ARENA BACKDROP GLOW (ENHANCED)
+   ============================== */
+
+.battle-grid {
+  position: relative;
+}
+
+.battle-grid::before {
+  content: "";
+  position: absolute;
+  inset: -60px -100px;
+  z-index: 0;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 25% 55%,
+      rgba(255, 77, 109, 0.32),
+      rgba(255, 77, 109, 0.18) 35%,
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 75% 55%,
+      rgba(78, 161, 255, 0.32),
+      rgba(78, 161, 255, 0.18) 35%,
+      transparent 60%
+    );
+
+  filter: blur(48px); /* tighter = less foggy */
+  opacity: 0.65;       /* was ~0.5 */
+}
+
+/* keep cards above glow */
+.duel-card {
+  position: relative;
+  z-index: 1;
+}
+/* ==============================
+   ARENA BACKDROP GLOW (TIGHTENED)
+   ============================== */
+
+.battle-grid {
+  position: relative;
+  isolation: isolate;
+}
+
+.battle-grid::before {
+  content: "";
+  position: absolute;
+  inset: -28px -42px;
+  z-index: 0;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse at 25% 52%,
+      rgba(255, 77, 109, 0.38),
+      rgba(255, 77, 109, 0.2) 28%,
+      transparent 54%
+    ),
+    radial-gradient(
+      ellipse at 75% 52%,
+      rgba(78, 161, 255, 0.38),
+      rgba(78, 161, 255, 0.2) 28%,
+      transparent 54%
+    );
+
+  filter: blur(34px);
+  opacity: 0.68;
+}
+
+.duel-card,
+.battle-versus-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 720px) {
+  .battle-grid::before {
+    inset: -34px -22px;
+    filter: blur(36px);
+    opacity: 0.48;
+  }
+}
+/* ==============================
+   MOBILE FILTER SCROLL CHIP
+   ============================== */
+
+.battle-scroll-chip {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .battle-scroll-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto;
+    padding: 8px 14px;
+
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(6px);
+
+    color: var(--text-soft);
+    font-size: 0.82rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+  }
+
+  .battle-scroll-chip:hover {
+    color: var(--text);
+    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+@media (max-width: 720px) {
+  .battle-scroll-chip {
+    animation: subtleBounce 2.2s infinite;
+  }
+
+  @keyframes subtleBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+}
+#battle-categories {
+  scroll-margin-top: 96px;
+}
+
+#battle-categories:target,
+#battle-categories.is-active {
+  animation: highlightFade 0.6s ease;
+}
+
+@keyframes highlightFade {
+  0% { box-shadow: 0 0 0 0 rgba(124,156,255,0.25); }
+  100% { box-shadow: 0 0 0 0 rgba(124,156,255,0); }
 }

@@ -21,10 +21,12 @@ import {
 import { updateVote } from "../lib/projectsApi";
 
 function BattleSkeleton({ selectedCategoryId, onSelectCategory, countsById }) {
+  const categoriesRef = useRef(null);
   const placeholderProject = {
     id: "placeholder",
     name: "Loading…",
     tagline: "Fetching the next duel.",
+    whyBuilt: "",
     link: "",
     imageUrl: "",
     screenshotUrl: "",
@@ -42,11 +44,11 @@ function BattleSkeleton({ selectedCategoryId, onSelectCategory, countsById }) {
         variant="battle"
         eyebrow="Duel arena"
         title="Which project would you ship?"
-        copy="Pick the build you would actually ship today."
+        copy="Pick the build you would actually ship today. If neither is ready, skip both."
       />
 
       <div className="arena-body" aria-busy="true" aria-live="polite">
-        <aside className="arena-filter" aria-label="Category filters">
+        <aside ref={categoriesRef} id="battle-categories" className="arena-filter" aria-label="Categories">
           <CategorySelector
             selectedCategoryId={selectedCategoryId}
             onSelect={onSelectCategory}
@@ -55,17 +57,26 @@ function BattleSkeleton({ selectedCategoryId, onSelectCategory, countsById }) {
         </aside>
 
         <div className="arena-duel">
+          <button
+            type="button"
+            className="battle-scroll-chip"
+            onClick={() => {
+              categoriesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+          >
+            Categories
+          </button>
           <div className="battle-grid is-loading">
             <div className="duel-card duel-card--left">
-              <BattleCard
-                project={placeholderProject}
-                overallRank={null}
-                tone="ship"
-                actionLabel="Loading…"
-                onPick={() => {}}
-                imageFetchPriority="high"
-              />
-            </div>
+  <BattleCard
+    project={placeholderProject}
+    overallRank={null}
+    tone="red"
+    actionLabel="Loading…"
+    onPick={() => {}}
+    imageFetchPriority="high"
+  />
+</div>
 
             <div className="battle-versus-wrap" aria-hidden="true">
               <div className="battle-versus">VS</div>
@@ -73,14 +84,14 @@ function BattleSkeleton({ selectedCategoryId, onSelectCategory, countsById }) {
             </div>
 
             <div className="duel-card duel-card--right">
-              <BattleCard
-                project={placeholderProject}
-                overallRank={null}
-                tone="skip"
-                actionLabel="Loading…"
-                onPick={() => {}}
-              />
-            </div>
+  <BattleCard
+    project={placeholderProject}
+    overallRank={null}
+    tone="blue"
+    actionLabel="Loading…"
+    onPick={() => {}}
+  />
+</div>
           </div>
 
           <div className="duel-signal" aria-label="Matchup signal">
@@ -114,14 +125,14 @@ function BattleSkeleton({ selectedCategoryId, onSelectCategory, countsById }) {
           </div>
         </div>
 
-        <aside className="arena-rail" aria-label="Live leaderboard">
+        <aside className="arena-rail" aria-label="Standings">
           <section className="leaders-panel" aria-hidden="true">
             <div className="leaders-panel__head">
               <div className="leaders-panel__headline">
-                <p className="leaders-panel__kicker">Live leaderboard</p>
+                <p className="leaders-panel__kicker">Standings</p>
                 <h2 className="leaders-panel__title">Loading…</h2>
                 <p className="leaders-panel__subline">
-                  Top projects by live ship signal
+                  Top builds right now
                 </p>
               </div>
             </div>
@@ -181,6 +192,7 @@ function normalizeProject(project) {
     ...project,
     name: project.name || "",
     tagline: project.tagline || "",
+    whyBuilt: String(project.whyBuilt || "").trim(),
     link: project.link || "",
     imageUrl: project.imageUrl || "",
     screenshotUrl: project.screenshotUrl || "",
@@ -200,6 +212,7 @@ export default function Battle({ projects, isLoading, onPublicRefresh }) {
   });
   const [isTransitioning, setIsTransitioning] = useState(false);
   const voteInFlightRef = useRef(false);
+  const categoriesRef = useRef(null);
 
   const selectedCategoryId = getSelectedCategoryId(searchParams.get("category"));
 
@@ -276,8 +289,6 @@ export default function Battle({ projects, isLoading, onPublicRefresh }) {
       voteInFlightRef.current = true;
       setIsTransitioning(true);
 
-      console.warn("[vote]", { winnerId: winner.id, loserId: loser.id });
-
       await updateVote(winner.id, loser.id);
 
       if (typeof onPublicRefresh === "function") {
@@ -286,8 +297,13 @@ export default function Battle({ projects, isLoading, onPublicRefresh }) {
 
       setMatchupSeed((current) => current + 1);
     } catch (error) {
-      console.error("Failed to persist vote:", error);
-    } finally {
+  if (error?.code === "functions/already-exists") {
+    setMatchupSeed((current) => current + 1);
+    return;
+  }
+
+  console.error("Failed to persist vote:", error);
+} finally {
       voteInFlightRef.current = false;
       setIsTransitioning(false);
     }
@@ -389,38 +405,59 @@ export default function Battle({ projects, isLoading, onPublicRefresh }) {
   return (
     <section className="battle-page battle-page--arena">
       <Hero
-  variant="battle"
-  eyebrow="Duel arena"
-  title="Which project would you ship?"
-  copy="Pick the build you would actually ship today. These are real vibe-coded projects & your votes decide what gets shipped. If neither is ready, skip both."
-/>
+        variant="battle"
+        eyebrow="Duel arena"
+        title="Which project would you ship?"
+        copy="Pick the build you would actually ship today. If neither is ready, skip both."
+      />
 
       <div className="arena-body">
-        <aside className="arena-filter" aria-label="Category filters">
+        <aside ref={categoriesRef} id="battle-categories" className="arena-filter" aria-label="Categories">
           <CategorySelector
             selectedCategoryId={selectedCategoryId}
             onSelect={handleSelectCategory}
             countsById={approvedCategoryCounts}
           />
         </aside>
-
         <div className="arena-duel">
+          <button
+            type="button"
+            className="battle-scroll-chip"
+            onClick={() => {
+  const el = categoriesRef.current;
+  if (!el) return;
+
+  el.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+
+  // 👇 add highlight feedback
+  el.classList.add("is-active");
+
+  setTimeout(() => {
+    el.classList.remove("is-active");
+  }, 600);
+}}
+          >
+            Categories
+          </button>
           <div
             className={`battle-grid ${
               isTransitioning ? "is-transitioning" : ""
             }`}
           >
             <div className="duel-card duel-card--left">
-              <BattleCard
-                project={leftProject}
-                overallRank={rankByProjectId.get(leftProject.id) || null}
-                tone="ship"
-                actionLabel="Ship this"
-                onPick={() => handleVote(leftProject.id)}
-                imageFetchPriority="high"
-                disabled={isTransitioning}
-              />
-            </div>
+  <BattleCard
+    project={leftProject}
+    overallRank={rankByProjectId.get(leftProject.id) || null}
+    tone="red"
+    actionLabel="Ship this"
+    onPick={() => handleVote(leftProject.id)}
+    imageFetchPriority="high"
+    disabled={isTransitioning}
+  />
+</div>
 
             <div className="battle-versus-wrap" aria-hidden="true">
               <div className="battle-versus">VS</div>
@@ -428,15 +465,15 @@ export default function Battle({ projects, isLoading, onPublicRefresh }) {
             </div>
 
             <div className="duel-card duel-card--right">
-              <BattleCard
-                project={rightProject}
-                overallRank={rankByProjectId.get(rightProject.id) || null}
-                tone="skip"
-                actionLabel="Ship this"
-                onPick={() => handleVote(rightProject.id)}
-                disabled={isTransitioning}
-              />
-            </div>
+  <BattleCard
+    project={rightProject}
+    overallRank={rankByProjectId.get(rightProject.id) || null}
+    tone="blue"
+    actionLabel="Ship this"
+    onPick={() => handleVote(rightProject.id)}
+    disabled={isTransitioning}
+  />
+</div>
           </div>
 
           <div className="duel-signal" aria-label="Matchup signal">
@@ -508,14 +545,21 @@ export default function Battle({ projects, isLoading, onPublicRefresh }) {
           </div>
         </div>
 
-        <aside className="arena-rail" aria-label="Live leaderboard">
+        <aside className="arena-rail" aria-label="Standings">
           <LeaderboardMini
             projects={eligibleApprovedProjects}
             selectedCategoryId={selectedCategoryId}
             limit={5}
+            kicker="Standings"
+            footerLabel="Full leaderboard"
           />
         </aside>
       </div>
     </section>
   );
 }
+
+
+
+
+

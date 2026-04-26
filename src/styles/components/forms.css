@@ -36,6 +36,13 @@
   color: #f8fafc;
 }
 
+.form-field__hint {
+  margin-top: -6px;
+  color: rgba(226, 232, 240, 0.66);
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
 .form-field input,
 .form-field select,
 .form-field textarea {

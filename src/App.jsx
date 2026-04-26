@@ -88,7 +88,10 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <Header onResetProjects={handleResetProjects} isAdmin={isAdmin} />
+      <Header
+        onResetProjects={isAdmin ? handleResetProjects : undefined}
+        isAdmin={isAdmin}
+      />
 
       <main className="page-shell">
         <Routes>

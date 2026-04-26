@@ -14,6 +14,10 @@ service cloud.firestore {
       return value is string && value.size() > 0 && value.size() <= maxLen;
     }
 
+    function isBoundedString(value, maxLen) {
+      return value is string && value.size() <= maxLen;
+    }
+
     function isHttpUrl(value) {
       return value is string
         && value.size() <= 2048
@@ -33,6 +37,8 @@ service cloud.firestore {
           'imageUrl',
           'screenshotUrl',
           'category',
+          'aiDisclosure',
+          'whyBuilt',
           'rating',
           'wins',
           'losses',
@@ -43,11 +49,19 @@ service cloud.firestore {
         ])
         && isNonEmptyString(request.resource.data.name, 80)
         && isNonEmptyString(request.resource.data.tagline, 160)
+        && (
+          !request.resource.data.keys().hasAny(['whyBuilt'])
+          || isBoundedString(request.resource.data.whyBuilt, 200)
+        )
         && isHttpUrl(request.resource.data.link)
         && isNonEmptyString(request.resource.data.imageUrl, 2048)
         && isNonEmptyString(request.resource.data.screenshotUrl, 2048)
         && request.resource.data.imageUrl == request.resource.data.screenshotUrl
         && isProjectCategory(request.resource.data.category)
+        && (
+          !request.resource.data.keys().hasAny(['aiDisclosure'])
+          || request.resource.data.aiDisclosure in ['ai_assisted', 'mixed', 'no_ai', 'undisclosed']
+        )
         && request.resource.data.status == 'pending'
         && request.resource.data.rating == 1200
         && request.resource.data.wins == 0
@@ -56,6 +70,10 @@ service cloud.firestore {
         // serverTimestamp() resolves to request.time in rules.
         && request.resource.data.submittedAt == request.time
         && request.resource.data.statusUpdatedAt == request.time;
+    }
+
+    function isValidProjectCreate() {
+      return isValidNewProject();
     }
 
     function changedKeys() {
@@ -121,7 +139,7 @@ service cloud.firestore {
       allow get, list: if isAdmin() || isApproved();
 
       // Public submissions: create-only, validated, forced pending + initial counters.
-      allow create: if isValidNewProject();
+      allow create: if isValidProjectCreate();
 
       // Voting is temporarily allowed (constrained) to keep the app usable.
       // Admin can moderate; public cannot edit/delete otherwise.

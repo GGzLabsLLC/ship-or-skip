@@ -7,6 +7,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { auth } from "../lib/firebase";
+import { Navigate } from "react-router-dom";
 
 export default function Admin({ isAdmin }) {
   const [user, setUser] = useState(null);
@@ -82,6 +83,10 @@ export default function Admin({ isAdmin }) {
       setIsBusy(false);
     }
   };
+
+  if (isAdmin) {
+  return <Navigate to="/moderation" replace />;
+}
 
   return (
     <section className="legal-page">

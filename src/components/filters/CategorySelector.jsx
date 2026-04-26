@@ -20,7 +20,7 @@ export default function CategorySelector({
           </span>
 
           <h2 id="category-filter-title" className="category-block__title">
-            Filter by
+            Categories
           </h2>
         </div>
 

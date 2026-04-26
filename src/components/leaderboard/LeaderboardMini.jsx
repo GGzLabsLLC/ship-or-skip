@@ -3,16 +3,17 @@ import {
   ALL_CATEGORY_ID,
   getCategoryLabelById,
 } from "../../constants/categories";
+import { getAiDisclosureBadgeLabel } from "../../constants/aiDisclosure";
 import { getRankedProjects, getShipRate } from "../../lib/leaderboardUtils";
 
 export default function LeaderboardMini({
   projects,
   selectedCategoryId,
   limit = 5,
-  kicker = "Live leaderboard",
+  kicker = "Standings",
   viewAllHref = "/leaderboard",
   footerHref = "/leaderboard",
-  footerLabel = "Open full leaderboard",
+  footerLabel = "Open leaderboard",
 }) {
   const rankedProjects = useMemo(() => {
     return getRankedProjects(projects).slice(0, limit);
@@ -20,17 +21,17 @@ export default function LeaderboardMini({
 
   const title =
     selectedCategoryId === ALL_CATEGORY_ID
-      ? "Market leaders"
-      : `Market leaders · ${getCategoryLabelById(selectedCategoryId)}`;
+      ? "Top builds"
+      : `Top builds · ${getCategoryLabelById(selectedCategoryId)}`;
 
   return (
-    <section className="leaders-panel" aria-label="Live leaderboard">
+    <section className="leaders-panel" aria-label="Standings">
       <div className="leaders-panel__head">
         <div className="leaders-panel__headline">
           <p className="leaders-panel__kicker">{kicker}</p>
           <h2 className="leaders-panel__title">{title}</h2>
           <p className="leaders-panel__subline">
-            Top {limit} projects by live ship signal
+            Top {limit} builds right now
           </p>
         </div>
 
@@ -40,10 +41,16 @@ export default function LeaderboardMini({
       </div>
 
       <div className="leaders-cols" aria-hidden="true">
-        <span className="leaders-cols__rank">Rank</span>
+        <span className="leaders-cols__rank">
+          <span className="leaders-cols__label leaders-cols__label--long">Rank</span>
+          <span className="leaders-cols__label leaders-cols__label--short">Rank</span>
+        </span>
         <span className="leaders-cols__project">Project</span>
         <span className="leaders-cols__elo">ELO</span>
-        <span className="leaders-cols__ship">Ship %</span>
+        <span className="leaders-cols__ship">
+          <span className="leaders-cols__label leaders-cols__label--long">Ship %</span>
+          <span className="leaders-cols__label leaders-cols__label--short">Ship</span>
+        </span>
         <span className="leaders-cols__votes">Votes</span>
       </div>
 
@@ -54,6 +61,7 @@ export default function LeaderboardMini({
           const wins = project?.wins || 0;
           const losses = project?.losses || 0;
           const votes = project?.votes || 0;
+          const aiDisclosureBadge = getAiDisclosureBadgeLabel(project?.aiDisclosure);
 
           return (
             <div
@@ -67,8 +75,15 @@ export default function LeaderboardMini({
 
               <div className="leaders-item__main">
                 <div className="leaders-item__name">{project.name}</div>
-                <div className="leaders-item__record">
-                  {wins}W - {losses}L
+                <div className="leaders-item__meta">
+                  <div className="leaders-item__record">
+                    {wins}W - {losses}L
+                  </div>
+                  {aiDisclosureBadge ? (
+                    <span className="pill pill--neutral pill--xs">
+                      {aiDisclosureBadge}
+                    </span>
+                  ) : null}
                 </div>
               </div>
 
@@ -89,7 +104,7 @@ export default function LeaderboardMini({
       </div>
 
       <div className="leaders-panel__footer">
-        <a href={footerHref} className="btn btn--ship btn--md btn--full">
+        <a href={footerHref} className="btn btn--secondary btn--md btn--full">
           {footerLabel}
         </a>
       </div>

@@ -1,4 +1,4 @@
-import {
+﻿import {
   collection,
   addDoc,
   getDocs,
@@ -7,7 +7,6 @@ import {
   updateDoc,
   query,
   where,
-  runTransaction,
 } from "firebase/firestore";
 import {
   ref,
@@ -16,6 +15,10 @@ import {
 } from "firebase/storage";
 import { db, storage } from "./firebase";
 import { optimizeScreenshotForUpload } from "./imageOptimize";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "./firebase";
+import { normalizeAiDisclosure } from "../constants/aiDisclosure";
+
 
 const PROJECTS_COLLECTION = "projects";
 const PROJECT_SCREENSHOTS_PREFIX = "project-screenshots";
@@ -23,6 +26,7 @@ const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const MAX_SCREENSHOT_SIZE_BYTES = 3 * 1024 * 1024;
 const MAX_NAME_LENGTH = 80;
 const MAX_TAGLINE_LENGTH = 160;
+const MAX_WHY_BUILT_LENGTH = 200;
 const MAX_CATEGORY_LENGTH = 40;
 const MAX_URL_LENGTH = 2048;
 
@@ -51,8 +55,10 @@ function getRandomSuffix() {
 function validateProjectSubmission(project) {
   const name = String(project?.name || "").trim();
   const tagline = String(project?.tagline || "").trim();
+  const whyBuilt = String(project?.whyBuilt || "").trim();
   const category = String(project?.category || "").trim();
   const link = getSafeHttpUrl(project?.link || "");
+  const aiDisclosure = normalizeAiDisclosure(project?.aiDisclosure);
   const screenshotFile = project?.screenshotFile || null;
 
   if (!name) throw new Error("Project name is required.");
@@ -63,6 +69,10 @@ function validateProjectSubmission(project) {
   if (!tagline) throw new Error("Tagline is required.");
   if (tagline.length > MAX_TAGLINE_LENGTH) {
     throw new Error(`Tagline must be ${MAX_TAGLINE_LENGTH} characters or fewer.`);
+  }
+
+  if (whyBuilt.length > MAX_WHY_BUILT_LENGTH) {
+    throw new Error(`Why I built this must be ${MAX_WHY_BUILT_LENGTH} characters or fewer.`);
   }
 
   if (!category) throw new Error("Category is required.");
@@ -83,7 +93,7 @@ function validateProjectSubmission(project) {
     throw new Error("Screenshot must be smaller than 3MB.");
   }
 
-  return { name, tagline, category, link, screenshotFile };
+  return { name, tagline, whyBuilt, category, link, aiDisclosure, screenshotFile };
 }
 
 async function uploadProjectScreenshot(file) {
@@ -165,6 +175,8 @@ export async function createProject(project) {
     imageUrl: screenshotUrl,
     screenshotUrl,
     category: validated.category,
+    aiDisclosure: validated.aiDisclosure,
+    whyBuilt: validated.whyBuilt,
 
     rating: 1200,
     wins: 0,
@@ -184,6 +196,8 @@ export async function createProject(project) {
     imageUrl: screenshotUrl,
     screenshotUrl,
     category: validated.category,
+    aiDisclosure: validated.aiDisclosure,
+    whyBuilt: validated.whyBuilt,
     rating: 1200,
     wins: 0,
     losses: 0,
@@ -197,7 +211,7 @@ function getEloWinProbability(ratingA, ratingB) {
   return 1 / (1 + 10 ** exponent);
 }
 
-function calculateEloRatings(winnerRating, loserRating) {
+function _calculateEloRatings(winnerRating, loserRating) {
   const kFactor = 32;
   const expectedWinner = getEloWinProbability(winnerRating, loserRating);
   const expectedLoser = 1 - expectedWinner;
@@ -215,45 +229,11 @@ export async function updateVote(winnerId, loserId) {
     throw new Error("Invalid vote payload.");
   }
 
-  const winnerRef = doc(db, PROJECTS_COLLECTION, winnerId);
-  const loserRef = doc(db, PROJECTS_COLLECTION, loserId);
+  const submitVote = httpsCallable(functions, "submitVote");
 
-  await runTransaction(db, async (transaction) => {
-    const [winnerSnap, loserSnap] = await Promise.all([
-      transaction.get(winnerRef),
-      transaction.get(loserRef),
-    ]);
-
-    if (!winnerSnap.exists() || !loserSnap.exists()) {
-      throw new Error("Project not found.");
-    }
-
-    const winnerData = winnerSnap.data();
-    const loserData = loserSnap.data();
-
-    if (String(winnerData?.status || "").toLowerCase() !== "approved") {
-      throw new Error("Winner is not eligible for voting.");
-    }
-
-    if (String(loserData?.status || "").toLowerCase() !== "approved") {
-      throw new Error("Loser is not eligible for voting.");
-    }
-
-    const winnerRating = Number(winnerData?.rating || 1200);
-    const loserRating = Number(loserData?.rating || 1200);
-
-    const updatedRatings = calculateEloRatings(winnerRating, loserRating);
-
-    transaction.update(winnerRef, {
-      rating: updatedRatings.winner,
-      wins: Number(winnerData?.wins || 0) + 1,
-      votes: Number(winnerData?.votes || 0) + 1,
-    });
-
-    transaction.update(loserRef, {
-      rating: updatedRatings.loser,
-      losses: Number(loserData?.losses || 0) + 1,
-    });
+  await submitVote({
+    winnerId,
+    loserId,
   });
 }
 
@@ -286,3 +266,5 @@ export async function restoreProjectToPending(projectId) {
     statusUpdatedAt: serverTimestamp(),
   });
 }
+
+

@@ -3,14 +3,11 @@
     "origin": [
       "http://localhost:5173",
       "http://localhost:4173",
-      "https://shiporskip.app"
+      "https://shipitorskip.com",
+      "https://www.shipitorskip.com"
     ],
     "method": ["GET", "POST", "PUT", "HEAD", "OPTIONS"],
-    "responseHeader": [
-      "Content-Type",
-      "Authorization",
-      "x-goog-resumable"
-    ],
+    "responseHeader": ["Content-Type", "Authorization", "x-goog-resumable"],
     "maxAgeSeconds": 3600
   }
 ]

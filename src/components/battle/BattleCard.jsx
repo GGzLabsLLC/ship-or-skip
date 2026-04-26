@@ -1,5 +1,7 @@
+﻿import { useState } from "react";
 import { formatDisplayUrl, getShipRate } from "../../lib/leaderboardUtils";
 import { getSafeExternalUrl } from "../../lib/url";
+import { getAiDisclosureBadgeLabel } from "../../constants/aiDisclosure";
 import ProjectImage from "../ProjectImage";
 
 export default function BattleCard({
@@ -13,6 +15,9 @@ export default function BattleCard({
 }) {
   const shipRate = getShipRate(project);
 
+  const whyBuilt = String(project?.whyBuilt || "").trim();
+  const [isWhyBuiltOpen, setIsWhyBuiltOpen] = useState(false);
+
   const safeLink = getSafeExternalUrl(project.link);
   const hasLink = Boolean(safeLink);
   const displayUrl = formatDisplayUrl(safeLink || "");
@@ -20,6 +25,7 @@ export default function BattleCard({
   const showRankBadge = Number.isInteger(overallRank) && overallRank >= 1 && overallRank <= 10;
   const badgeTone =
     overallRank === 1 ? "is-top-1" : overallRank === 2 || overallRank === 3 ? "is-top-3" : "";
+  const aiDisclosureBadge = getAiDisclosureBadgeLabel(project?.aiDisclosure);
 
   return (
     <article className={`battle-card ${tone ? `battle-card--${tone}` : ""}`}>
@@ -44,13 +50,44 @@ export default function BattleCard({
 
       <div className="battle-card__body">
         <div className="battle-card__meta-row">
-          <span className="pill">{project.category}</span>
+          <div className="battle-card__pills">
+            <span className="pill">{project.category}</span>
+            {aiDisclosureBadge ? (
+              <span className="pill pill--neutral">{aiDisclosureBadge}</span>
+            ) : null}
+          </div>
           <span className="battle-card__rating">ELO {project.rating}</span>
         </div>
 
         <div className="battle-card__content">
           <h2 className="battle-card__title">{project.name}</h2>
           <p className="battle-card__tagline">{project.tagline}</p>
+          {whyBuilt ? (
+            <div
+              className="battle-card__why"
+              data-open={isWhyBuiltOpen ? "true" : "false"}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button
+                type="button"
+                className="battle-card__why-toggle"
+                aria-expanded={isWhyBuiltOpen}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setIsWhyBuiltOpen((current) => !current);
+                }}
+              >
+                <span className="battle-card__why-label">Why I built this</span>
+                <span className="battle-card__why-icon" aria-hidden="true">
+                  ›
+                </span>
+              </button>
+
+              {isWhyBuiltOpen ? (
+                <p className="battle-card__why-text">{whyBuilt}</p>
+              ) : null}
+            </div>
+          ) : null}
 
           <div className="battle-card__url-row">
             <span className="battle-card__url-label">Live at</span>
@@ -104,3 +141,4 @@ export default function BattleCard({
     </article>
   );
 }
+

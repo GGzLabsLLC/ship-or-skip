@@ -1,5 +1,6 @@
 import { formatDisplayUrl, getShipRate } from "../../lib/leaderboardUtils";
 import { getSafeExternalUrl } from "../../lib/url";
+import { getAiDisclosureBadgeLabel } from "../../constants/aiDisclosure";
 import ProjectImage from "../ProjectImage";
 
 export default function LeaderboardTable({ rankedProjects }) {
@@ -22,6 +23,7 @@ export default function LeaderboardTable({ rankedProjects }) {
             const safeLink = getSafeExternalUrl(project.link);
             const rank = index + 1;
             const shipRate = getShipRate(project);
+            const aiDisclosureBadge = getAiDisclosureBadgeLabel(project?.aiDisclosure);
 
             return (
               <tr
@@ -74,7 +76,16 @@ export default function LeaderboardTable({ rankedProjects }) {
                     </div>
                   </div>
                 </td>
-                <td>{project.category}</td>
+                <td>
+                  <div className="leaderboard-category">
+                    <span>{project.category}</span>
+                    {aiDisclosureBadge ? (
+                      <span className="pill pill--neutral pill--sm">
+                        {aiDisclosureBadge}
+                      </span>
+                    ) : null}
+                  </div>
+                </td>
                 <td>{project.rating}</td>
                 <td>
                   <div

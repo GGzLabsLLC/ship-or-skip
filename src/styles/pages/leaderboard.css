@@ -100,6 +100,13 @@
   min-width: 88px;
 }
 
+.leaderboard-category {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .leaderboard-shiprate {
   --shiprate: 0;
 

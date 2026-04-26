@@ -1,8 +1,9 @@
-const mockProjects = [
+﻿const mockProjects = [
   {
     id: "zerodays",
     name: "ZeroDays",
     tagline: "Train smarter. Ship ready.",
+    whyBuilt: "I wanted a faster feedback loop for busy builders.",
     imageUrl: "https://picsum.photos/seed/zerodays/900/600",
     link: "https://zerodaysapp.com",
     category: "SaaS",
@@ -18,6 +19,7 @@ const mockProjects = [
     id: "ggz-hub",
     name: "GGz Hub",
     tagline: "A modular gaming hub built for creators, weapons, and discovery.",
+    whyBuilt: "I missed a single place to explore creator-made loadouts.",
     imageUrl: "https://picsum.photos/seed/ggzhub/900/600",
     link: "https://example.com/ggz",
     category: "Gaming",
@@ -33,6 +35,7 @@ const mockProjects = [
     id: "nitewatch",
     name: "Nite’s Watch",
     tagline: "Late-night rooms, presence, moderation, and social connection.",
+    whyBuilt: "I built it to make small communities feel safe at night.",
     imageUrl: "https://picsum.photos/seed/niteswatch/900/600",
     link: "https://example.com/niteswatch",
     category: "Social",
@@ -48,6 +51,7 @@ const mockProjects = [
     id: "localtap",
     name: "LocalTap",
     tagline: "Local delivery and dispatch with role-based dashboards.",
+    whyBuilt: "I needed a simple dispatcher view for a local co-op.",
     imageUrl: "https://picsum.photos/seed/localtap/900/600",
     link: "https://example.com/localtap",
     category: "Marketplace",
@@ -63,6 +67,7 @@ const mockProjects = [
     id: "shipfast-ai",
     name: "ShipFast AI",
     tagline: "Launch pages, pricing, and waitlists in a weekend.",
+    whyBuilt: "I got tired of rebuilding the same launch flows.",
     imageUrl: "https://picsum.photos/seed/shipfast/900/600",
     link: "https://example.com/shipfast",
     category: "AI",

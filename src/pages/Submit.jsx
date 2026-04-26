@@ -1,10 +1,14 @@
-import { useMemo, useRef, useState } from "react";
+﻿import { useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   ALL_CATEGORY_ID,
   getCategoryLabelById,
   getSelectedCategoryId,
 } from "../constants/categories";
+import {
+  AI_DISCLOSURE_OPTIONS,
+  DEFAULT_AI_DISCLOSURE,
+} from "../constants/aiDisclosure";
 import { createProject } from "../lib/projectsApi";
 
 const CATEGORY_OPTIONS = [
@@ -20,12 +24,15 @@ const CATEGORY_OPTIONS = [
 const initialForm = {
   name: "",
   tagline: "",
+  whyBuilt: "",
   link: "",
   category: "AI",
+  aiDisclosure: DEFAULT_AI_DISCLOSURE,
 };
 
 const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const MAX_FILE_SIZE_MB = 3;
+const MAX_WHY_BUILT_LENGTH = 200;
 
 function isValidUrl(value) {
   try {
@@ -144,6 +151,7 @@ export default function Submit({ refreshProjects }) {
     const trimmedName = form.name.trim();
     const trimmedTagline = form.tagline.trim();
     const trimmedLink = form.link.trim();
+    const trimmedWhyBuilt = form.whyBuilt.trim();
 
     setSuccess("");
 
@@ -164,8 +172,10 @@ export default function Submit({ refreshProjects }) {
       await createProject({
         name: trimmedName,
         tagline: trimmedTagline,
+        whyBuilt: trimmedWhyBuilt,
         link: trimmedLink,
         category: form.category,
+        aiDisclosure: form.aiDisclosure,
         screenshotFile,
       });
 
@@ -232,6 +242,19 @@ export default function Submit({ refreshProjects }) {
                   onChange={handleChange}
                 />
               </label>
+              <label className="form-field">
+  <span>
+  Why I built this <em className="form-optional">(optional)</em>
+</span>
+  <textarea
+    name="whyBuilt"
+    placeholder="Built this to…"
+    value={form.whyBuilt}
+    onChange={handleChange}
+    maxLength={MAX_WHY_BUILT_LENGTH}
+    rows={2}
+  />
+</label>
 
               <label className="form-field">
                 <span>Project URL</span>
@@ -242,6 +265,24 @@ export default function Submit({ refreshProjects }) {
                   value={form.link}
                   onChange={handleChange}
                 />
+              </label>
+
+              <label className="form-field">
+                <span>AI disclosure</span>
+                <small className="form-field__hint">
+                  Optional: let voters know whether AI helped build this project.
+                </small>
+                <select
+                  name="aiDisclosure"
+                  value={form.aiDisclosure}
+                  onChange={handleChange}
+                >
+                  {AI_DISCLOSURE_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </label>
             </div>
 
@@ -375,3 +416,4 @@ export default function Submit({ refreshProjects }) {
     </section>
   );
 }
+

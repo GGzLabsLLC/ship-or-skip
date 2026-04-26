@@ -1,13 +1,18 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 export default function Header({ onResetProjects, isAdmin = false }) {
-  const showResetSeason = isAdmin && import.meta.env.DEV;
+  const location = useLocation();
+  const isModerationRoute = location.pathname.startsWith("/moderation");
+  const showResetSeason =
+    isAdmin &&
+    import.meta.env.DEV &&
+    isModerationRoute &&
+    typeof onResetProjects === "function";
 
   const navItems = [
     { to: "/battle", label: "Battle" },
     { to: "/leaderboard", label: "Leaderboard" },
     { to: "/submit", label: "Submit" },
-    ...(isAdmin ? [{ to: "/moderation", label: "Moderation" }] : []),
   ];
 
   return (
